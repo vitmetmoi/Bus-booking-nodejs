@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+	  "target": "ESNext",
+	  "module": "ESNext",
+	  "baseUrl": "./src",
+	  "paths": {
+		"@/*": ["*"]
+	  },
+	  "moduleResolution": "Node",
+	  "outDir": "dist",
+	  "importsNotUsedAsValues": "remove",
+	  "strict": true,
+	  "esModuleInterop": true,
+	  "skipLibCheck": true,
+	  "forceConsistentCasingInFileNames": true,
+	  "types": ["vitest/globals", "node"], // ✅ Thêm "node" để tránh lỗi với thư viện NodeJS
+	//   "typeRoots": ["./node_modules/@types", "./src/types"]
+	//   "typeRoots": ["./node_modules/@types", "./node_modules/vitest", "./src/types"]
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
+  }
+  

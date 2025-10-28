@@ -1,0 +1,75 @@
+Thêm tài liệu API cho endpoint POST /users vào Swagger sử dụng userRegistry từ thư viện zod-to-openapi.
+1.Import cần thiết:
+
+- Các registry là nơi bạn đã định nghĩa các endpoint và schema của từng module (healthCheck, user, car).
+
+- Trong file userRouter.ts thêm đoạn sau:
+
+2.Tạo type OpenAPIDocument:
+
+-Khai báo kiểu của tài liệu OpenAPI được trả về.
+
+-Hàm generateDocument
+
+-Tạo registry từ danh sách các route/module bạn đã định nghĩa.
+
+-Tạo generator từ registry.definitions.
+
+-Gọi generateDocument để tạo đối tượng OpenAPI với metadata như version, title, externalDocs...
+
+ví dụ: 
+// Đăng ký tài liệu Swagger cho endpoint POST /users
+userRegistry.registerPath({
+  method: "post", // HTTP method: POST
+  path: "/users", // Đường dẫn API
+  operationId: "createUser", // ID duy nhất để định danh operation trong Swagger
+  summary: "Create a new user", // Mô tả ngắn gọn chức năng API
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object", // Kiểu dữ liệu yêu cầu là object
+          properties: {
+            name: { type: "string" }, // Trường 'name' là chuỗi
+            email: { type: "string", format: "email" }, // Trường 'email' là chuỗi định dạng email
+            age: { type: "integer", minimum: 18 }, // Trường 'age' là số nguyên >= 18
+          },
+          required: ["name", "email", "age"], // Các trường bắt buộc
+        },
+      },
+    },
+  },
+  responses: {
+    201: { // Mã phản hồi 201 - tạo user thành công
+      description: "User created successfully",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              id: { type: "number" }, // ID của user vừa tạo
+              name: { type: "string" }, // Tên
+              email: { type: "string" }, // Email
+              age: { type: "number" }, // Tuổi
+              createdAt: { type: "string", format: "date-time" }, // Thời gian tạo
+              updatedAt: { type: "string", format: "date-time" }, // Thời gian cập nhật gần nhất
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: "Invalid input data", // Khi dữ liệu đầu vào không hợp lệ
+    },
+    500: {
+      description: "Internal server error", // Lỗi phía server
+    },
+  },
+});
+
+// Định nghĩa route thực tế trong Express để xử lý POST /users
+userRouter.post(
+  "/", // Endpoint `/users` do router gốc đã gắn `/users`
+  validateRequest(CreateUserSchema), // Middleware kiểm tra dữ liệu đầu vào theo schema zod
+  userController.createUser // Controller xử lý logic tạo user
+);
