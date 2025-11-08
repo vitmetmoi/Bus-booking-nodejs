@@ -51,6 +51,7 @@ export class AuthRepository {
                 phone: user.phone,
                 age: user.age,
                 username: user.email.split("@")[0],
+                is_active: true,
                 role: "user"
             });
         } catch (error) {

@@ -23,7 +23,7 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
 }
 
 const INTENTS = [
-    { name: "book_ticket", description: "Đặt vé xe buýt" },
+    { name: "book_ticket", description: "Đặt vé xe buýt,Tìm xe buýt phù hợp với yêu cầu của bạn, " },
     { name: "collect_information", description: "Thu thập thông tin đặt vé từ người dùng bao gồm địa điểm đi, địa điểm đến, thời gian khởi hành" },
     { name: "booking_help", description: "Hỗ trợ đặt vé, thanh toán và tra cứu thông tin vé" },
     { name: "contact_support", description: "Liên hệ bộ phận hỗ trợ khi gặp sự cố hoặc cần tư vấn" },

@@ -133,12 +133,14 @@ class TicketController {
       // Extract pagination parameters from query
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
+      const status = req.query.status as string || "";
+      const search = req.query.search as string || "";
 
       const serviceResponse = await ticketService.getTicketHistory({
         id: currentUser.id,
         email: currentUser.email,
         role: currentUser.role,
-      }, page, limit);
+      }, page, limit, status, search);
 
       res.status(serviceResponse.statusCode).send(serviceResponse);
     } catch (error) {

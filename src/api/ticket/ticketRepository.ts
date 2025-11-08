@@ -115,19 +115,41 @@ export class TicketRepository {
   }
 
   // Xem lại tất cả lịch sử đặt vé với pagination
-  async getAllTickets(page: number = 1, limit: number = 10): Promise<{ tickets: Ticket[]; total: number }> {
+  async getAllTickets(page: number = 1, limit: number = 10, status: string = "BOOKED", search: string = ""): Promise<{ tickets: Ticket[]; total: number }> {
     const offset = (page - 1) * limit;
     console.log("offset", offset)
-    const [tickets, totalResult] = await Promise.all([
-      db("tickets")
-        .select("*")
-        .limit(limit)
-        .offset(offset)
-        .orderBy("created_at", "desc"),
-      db("tickets").count("* as count").first()
-    ]);
-    console.log("tickets", tickets)
-    console.log("totalResult", totalResult)
+    console.log("status", status)
+    console.log("search", search)
+
+    let tickets: Ticket[] = [];
+    let totalResult;
+    if (search || status) {
+      [tickets, totalResult] = await Promise.all([
+        db("tickets")
+          .select("*")
+          .where("status", status || "BOOKED")
+          .orWhere("id", search)
+          .orWhere("user_id", search)
+          .orWhere("seat_id", search)
+          .orWhere("schedule_id", search)
+          .orWhere("total_price", search)
+          .limit(limit)
+          .offset(offset)
+          .orderBy("created_at", "desc"),
+        db("tickets").count("* as count").first()
+      ]);
+    }
+    else {
+      [tickets, totalResult] = await Promise.all([
+        db("tickets")
+          .select("*")
+          .limit(limit)
+          .offset(offset)
+          .orderBy("created_at", "desc"),
+        db("tickets").count("* as count").first()
+      ]);
+    }
+
     return {
       tickets,
       total: Number(totalResult?.count || 0)

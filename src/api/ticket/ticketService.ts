@@ -318,7 +318,7 @@ export class TicketService {
   }
 
   // Xem lại tất cả lịch sử đặt vé với pagination
-  async getTicketHistory(currentUser: CurrentUser, page: number = 1, limit: number = 10): Promise<ServiceResponse<{ tickets: Ticket[]; total: number; page: number; limit: number } | null>> {
+  async getTicketHistory(currentUser: CurrentUser, page: number = 1, limit: number = 10, status: string = "", search: string = ""): Promise<ServiceResponse<{ tickets: Ticket[]; total: number; page: number; limit: number } | null>> {
     try {
       let result: { tickets: Ticket[]; total: number };
       console.log("currentUser", currentUser)
@@ -326,7 +326,7 @@ export class TicketService {
       console.log("limit", limit)
       if (currentUser.role === "admin") {
         // Admin xem toàn bộ lịch sử
-        result = await this.ticketRepository.getAllTickets(page, limit);
+        result = await this.ticketRepository.getAllTickets(page, limit, status, search);
         console.log("result", result)
       } else {
         // Người dùng thông thường chỉ xem lịch sử của chính mình
